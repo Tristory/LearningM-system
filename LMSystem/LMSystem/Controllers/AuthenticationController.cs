@@ -3,6 +3,7 @@ using LMSystem.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace LMSystem.Controllers
 {
@@ -70,6 +71,6 @@ namespace LMSystem.Controllers
             var result = await _authService.GiveRole(userName, roleName);
 
             return Content(result);
-        }
+        }        
     }
 }

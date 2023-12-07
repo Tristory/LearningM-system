@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add Micro services
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddScoped<IFileHandlerService, FileHandlerService>();
 
 // Add db context service
 builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(builder.Configuration.GetConnectionString("DbCon")));

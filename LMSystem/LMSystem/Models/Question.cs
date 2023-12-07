@@ -3,21 +3,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LMSystem.Models
 {
-    public class Subject
+    public class Question
     {
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string Content { get; set; }
 
         // Foreign Connection
-        public ICollection<Topic> Topics { get; set; }
-        public ICollection<Exam> Exams { get; set; }
-        public ICollection<Material> Materials { get; set; }
+        public ICollection<Answer> Answers { get; set; }
 
         // Foreign Key
-        public string? TeacherId { get; set; }
-        [ForeignKey("TeacherId")]
+        public int TopicId { get; set; }
+        [ForeignKey("TopicId")]
+        public Topic Topic { get; set; }
+
+        public string OwnerId { get; set; }
+        [ForeignKey("OwnerId")]
         public ApplicationUser ApplicationUser { get; set; }
+
     }
 }
