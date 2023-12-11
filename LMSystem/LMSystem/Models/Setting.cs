@@ -11,7 +11,7 @@ namespace LMSystem.Models
         public string Description { get; set; }
         //public string Gender { get; set; }
         //public string Address { get; set; }
-        //public string PotraitPic { get; set; }
+        public string PotraitPic { get; set; }
 
         // Foreign key
         public string UserId { get; set; }

@@ -5,8 +5,10 @@ namespace LMSystem.Repository
 {
     public interface IFileHandlerService
     {
-        Task<FileInfor> DownloadFile(string fileName, string fileType);
-        IFormFile ShowFile(string fileName, string fileType);
-        Task<string> UploadFile(IFormFile file, string fileName, string fileType);
+        string ChangeFileName(string oldName, string newName, string folderType);
+        string DeleteFile(string fileName, string folderType);
+        Task<FileInfor> DownloadFile(string fileName, string folderType);
+        IFormFile ShowFile(string fileName, string folderType);
+        Task<string> UploadFile(IFormFile file, string fileName, string folderType);
     }
 }

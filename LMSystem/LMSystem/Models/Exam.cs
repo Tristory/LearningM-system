@@ -12,6 +12,7 @@ namespace LMSystem.Models
         public int Duration {  get; set; }
         public string status { get; set; }
         public bool IsApproved { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime ValidatedD { get; set; }
 
         // Foreign Key

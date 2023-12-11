@@ -27,7 +27,7 @@
   <ItemGroup>
     <Folder Include="File Storage\Exams\" />
     <Folder Include="File Storage\Materials\" />
-    <Folder Include="File Storage\Portrait\" />
+    <Folder Include="File Storage\Portraits\" />
   </ItemGroup>
 
 </Project>

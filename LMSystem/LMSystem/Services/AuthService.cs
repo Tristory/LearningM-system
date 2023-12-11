@@ -1,7 +1,9 @@
 ﻿using LMSystem.Models;
 using LMSystem.Repository;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -19,6 +21,29 @@ namespace LMSystem.Services
             _roleManager = roleManager;
         }
 
+        public async Task<List<ApplicationUser>> GetApplicationUsers()
+        {
+            return await _userManager.Users.ToListAsync();
+        }
+
+        public async Task<List<ApplicationUser>> GetUserByNameOrId(string searchS)
+        {
+            return await _userManager.Users
+                .Where(u => u.UserName.Contains(searchS) || u.Id.Contains(searchS)).ToListAsync();
+        }
+
+        public async Task<IEnumerable<ApplicationUser>> GetUsersByRole(string roleName)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+
+            return await Task.FromResult(_userManager.GetUsersInRoleAsync(role.Name).Result);
+        }
+
+        public async Task<ApplicationUser> GetApplicationUserAsync(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId);
+        }
+
         public async Task<bool> RegisterUser(LoginUser user)
         {
             var appUser = new ApplicationUser
@@ -28,6 +53,15 @@ namespace LMSystem.Services
             };
 
             var result = await _userManager.CreateAsync(appUser, user.Password);
+
+            return result.Succeeded;
+        }
+
+        public async Task<bool> RemoveUser(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            var result = await _userManager.DeleteAsync(user);
 
             return result.Succeeded;
         }
@@ -92,6 +126,15 @@ namespace LMSystem.Services
             return result.Succeeded;
         }
 
+        public async Task<bool> DeleteRole(string roleName)
+        {
+            var role = await _roleManager.FindByNameAsync(roleName);
+
+            var result = await _roleManager.DeleteAsync(role);
+
+            return result.Succeeded;
+        }
+
         public async Task<string> GiveRole(string userName, string roleName)
         {
             var user = await _userManager.FindByEmailAsync(userName);
@@ -105,6 +148,21 @@ namespace LMSystem.Services
             var result = await _userManager.AddToRoleAsync(user, roleName);
 
             return "Add success!";
+        }
+
+        public async Task<string> DeleteRole(string userName, string roleName)
+        {
+            var user = await _userManager.FindByEmailAsync(userName);
+            if (user == null)
+                return "There is no account like this!";
+
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role == null)
+                return "There is no role like that!";
+
+            var result = await _userManager.RemoveFromRoleAsync(user, roleName);
+
+            return "Delete success!";
         }
     }
 }

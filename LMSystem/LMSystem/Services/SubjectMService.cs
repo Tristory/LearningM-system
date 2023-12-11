@@ -14,7 +14,42 @@ namespace LMSystem.Services
         }
 
         // For Subject Handling
-        public List<Subject> GetSubjects() => _context.Subjects.ToList();
+        public List<Subject> GetSubjects()
+        {
+            return _context.Subjects
+                .Include(e => e.ApplicationUser)
+                .OrderByDescending(e => e.SendingD).ToList();
+        }
+
+        public List<Subject> GetFilterNameSubjects(string name)
+        {
+            return _context.Subjects
+                .Include(e => e.ApplicationUser)
+                .Where(e => e.Name == name).ToList();
+        }
+
+        public List<Subject> GetFilterTeacherSubjects(string teacherId)
+        {
+            return _context.Subjects
+                .Include(e => e.ApplicationUser)
+                .Where(e => e.TeacherId == teacherId).ToList();
+        }
+
+        public List<Subject> GetFilterStatusSubjects(string status)
+        {
+            return _context.Subjects
+                .Include(e => e.ApplicationUser)
+                .Where(e => e.Status == status).ToList();
+        }
+
+        public Subject GetSubject(int id) => _context.Subjects.Find(id);
+
+        public Subject GetDetailSubject(int id)
+        {
+            return _context.Subjects
+                .Include(e => e.ApplicationUser)
+                .FirstOrDefault(e => e.Id == id);
+        }
 
         public string CreateSubject(Subject subject)
         { 

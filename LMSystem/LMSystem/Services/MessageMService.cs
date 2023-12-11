@@ -21,6 +21,13 @@ namespace LMSystem.Services
                 .Where(e => e.ReceiverId == userId).ToList();
         }
 
+        public List<Notification> GetSearchNotify(string searchS)
+        {
+            return _context.Notifications
+                .Include(e => e.ApplicationUser)
+                .Where(e => e.Header.Contains(searchS)).ToList();
+        }
+
         public List<Notification> GetDeletableNotify()
         {
             return _context.Notifications
@@ -128,6 +135,8 @@ namespace LMSystem.Services
 
         // For Request Handling
         public List<Request> GetRequests() => _context.Requests.ToList();
+
+        //public List<Request> 
         
         public string CreateRequest(Request request)
         {

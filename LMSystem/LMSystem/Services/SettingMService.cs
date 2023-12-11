@@ -1,5 +1,6 @@
 ﻿using LMSystem.Data;
 using LMSystem.Models;
+using LMSystem.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMSystem.Services
@@ -7,10 +8,12 @@ namespace LMSystem.Services
     public class SettingMService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IFileHandlerService _fileHandlerService;
 
-        public SettingMService(ApplicationDbContext context)
+        public SettingMService(ApplicationDbContext context, IFileHandlerService fileHandlerService)
         {
             _context = context;
+            _fileHandlerService = fileHandlerService;
         }
 
         public Setting GetSetting(string userId)
@@ -42,6 +45,31 @@ namespace LMSystem.Services
             _context.SaveChanges();
 
             return "Delete success!";
+        }
+
+        public async Task<string> ChangePotraitSetting(Setting setting, IFormFile uploadFile)
+        {
+            var path = await _fileHandlerService.UploadFile(uploadFile, setting.UserId, "Portraits");
+
+            setting.PotraitPic = path;
+
+            return UpdateSetting(setting);
+        }
+
+        public string DeletePortrait(Setting setting)
+        {
+            var result = _fileHandlerService.DeleteFile(setting.UserId, "Portraits");
+
+            setting.PotraitPic = string.Empty;
+
+            return UpdateSetting(setting);
+        }
+
+        public string NotitfySetting(Setting setting)
+        {
+            setting.IsAcceptNotify = !setting.IsAcceptNotify;
+
+            return UpdateSetting(setting);
         }
     }
 }

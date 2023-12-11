@@ -8,7 +8,9 @@ namespace LMSystem.Models
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
+        public string Status { get; set; }
         public string Description { get; set; }
+        public DateTime SendingD { get; set; }
 
         // Foreign Connection
         public ICollection<Topic> Topics { get; set; }
