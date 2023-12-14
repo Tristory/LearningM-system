@@ -34,9 +34,9 @@ namespace LMSystem.Services
 
         public async Task<IEnumerable<ApplicationUser>> GetUsersByRole(string roleName)
         {
-            var role = await _roleManager.FindByNameAsync(roleName);
+            //var role = await _roleManager.FindByNameAsync(roleName);
 
-            return await Task.FromResult(_userManager.GetUsersInRoleAsync(role.Name).Result);
+            return await Task.FromResult(_userManager.GetUsersInRoleAsync(roleName).Result);
         }
 
         public async Task<ApplicationUser> GetApplicationUserAsync(string userId)
@@ -124,6 +124,13 @@ namespace LMSystem.Services
             var result = await _roleManager.CreateAsync(role);
 
             return result.Succeeded;
+        }
+
+        public async Task<string> ChangePassword(ApplicationUser user, string currentPassword, string newPassword)
+        {
+            await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+            return "Change success!";
         }
 
         public async Task<bool> DeleteRole(string roleName)

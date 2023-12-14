@@ -16,6 +16,8 @@ namespace LMSystem.Models
         public ICollection<Topic> Topics { get; set; }
         public ICollection<Exam> Exams { get; set; }
         public ICollection<Material> Materials { get; set; }
+        public ICollection<StudentSubject> StudentSubjects { get; set; }
+        public ICollection<Class> Classes { get; set; }
 
         // Foreign Key
         public string? TeacherId { get; set; }

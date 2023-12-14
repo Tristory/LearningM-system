@@ -11,6 +11,7 @@ namespace LMSystem.Models
         public ICollection<Answer> Answers { get; set; }
         public ICollection<Question> Questions { get; set; }
         public ICollection<Notification> Notifications { get; set; }
+        public ICollection<StudentSubject> StudentSubjects { get; set; } 
         public Setting Setting { get; set; }
     }
 

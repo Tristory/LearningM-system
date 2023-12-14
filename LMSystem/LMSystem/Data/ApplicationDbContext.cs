@@ -1,6 +1,7 @@
 ﻿using LMSystem.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
 
 namespace LMSystem.Data
 {
@@ -19,5 +20,9 @@ namespace LMSystem.Data
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<StudentSubject> StudentSubjects { get; set; }
+        public DbSet<Class> Classes { get; set; }
+        public DbSet<ClassMaterial> ClassMaterials { get; set; }
+        public DbSet<Lecture> Lectures { get; set; }
     }
 }

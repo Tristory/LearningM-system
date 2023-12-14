@@ -7,5 +7,6 @@ namespace LMSystem.Controllers
     [ApiController]
     public class LeaderController : ControllerBase
     {
+        public LeaderController() { }
     }
 }

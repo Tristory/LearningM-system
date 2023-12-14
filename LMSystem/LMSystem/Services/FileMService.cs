@@ -93,6 +93,14 @@ namespace LMSystem.Services
                 .Where(e => e.SubjectId == subjectId).ToList();
         }
 
+        public List<Material> GetSearchMaterials(string searchS)
+        {
+            return _context.Materials
+                .Include(e => e.Subject)
+                .Include(e => e.File)
+                .Where(e => e.File.Name.Contains(searchS)).ToList();
+        }
+
         public List<Material> GetSubjectStatusMaterials(string status)
         {
             return _context.Materials
@@ -132,6 +140,8 @@ namespace LMSystem.Services
                 .Include(e => e.File)
                 .Where(e => e.File.Name.Contains(searchS)).ToList();
         }
+
+        public List<Material> GetMaterials() => _context.Materials.ToList();
 
         public Material GetMaterial(int id) => _context.Materials.Find(id);
 
@@ -202,6 +212,14 @@ namespace LMSystem.Services
                 .Where(e => e.SubjectId == subjectId).ToList();
         }
 
+        public List<Exam> GetSearchExams(string searchS)
+        {
+            return _context.Exams
+                .Include(e => e.Subject)
+                .Include(e => e.File)
+                .Where(e => e.File.Name.Contains(searchS)).ToList();
+        }
+
         public List<Exam> GetSubjectStatusExams(string status)
         {
             return _context.Exams
@@ -225,6 +243,8 @@ namespace LMSystem.Services
                 .Include(e => e.File)
                 .Where(e => e.File.Name.Contains(searchS)).ToList();
         }
+
+        public List<Exam> GetExams() => _context.Exams.ToList();
 
         public Exam GetFileExam(int fileId)
         {
