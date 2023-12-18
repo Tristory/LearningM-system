@@ -18,4 +18,11 @@ namespace LMSystem.Models
         [ForeignKey("SubjectId")]
         public Subject Subject { get; set; }
     }
+
+    public class TopicFrame
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public int SubjectId { get; set; }
+    }
 }

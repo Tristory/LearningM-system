@@ -23,4 +23,11 @@ namespace LMSystem.Models
         public ApplicationUser ApplicationUser { get; set; }
 
     }
+
+    public class QuestionFrame
+    {
+        public string Name { get; set; }
+        public string Content { get; set; }
+        public int TopicId { get; set; }
+    }
 }

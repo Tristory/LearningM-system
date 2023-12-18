@@ -26,22 +26,32 @@ namespace LMSystem.Services
             return await _userManager.Users.ToListAsync();
         }
 
+        public async Task<List<IdentityRole>> GetRoles()
+        {
+            return await _roleManager.Roles.ToListAsync();
+        }
+
         public async Task<List<ApplicationUser>> GetUserByNameOrId(string searchS)
         {
             return await _userManager.Users
                 .Where(u => u.UserName.Contains(searchS) || u.Id.Contains(searchS)).ToListAsync();
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetUsersByRole(string roleName)
+        public async Task<List<ApplicationUser>> GetUsersByRole(string roleName)
         {
             //var role = await _roleManager.FindByNameAsync(roleName);
 
-            return await Task.FromResult(_userManager.GetUsersInRoleAsync(roleName).Result);
+            return (List<ApplicationUser>) await _userManager.GetUsersInRoleAsync(roleName);
         }
 
-        public async Task<ApplicationUser> GetApplicationUserAsync(string userId)
+        public async Task<ApplicationUser> GetApplicationUserByIdAsync(string userId)
         {
             return await _userManager.FindByIdAsync(userId);
+        }
+
+        public async Task<ApplicationUser> GetApplicationUserByNameAsync(string userName)
+        {
+            return await _userManager.FindByNameAsync(userName);
         }
 
         public async Task<bool> RegisterUser(LoginUser user)
@@ -57,7 +67,7 @@ namespace LMSystem.Services
             return result.Succeeded;
         }
 
-        public async Task<bool> RemoveUser(string userId)
+        public async Task<bool> DeleteUser(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -142,7 +152,7 @@ namespace LMSystem.Services
             return result.Succeeded;
         }
 
-        public async Task<string> GiveRole(string userName, string roleName)
+        public async Task<string> GiveUserRole(string userName, string roleName)
         {
             var user = await _userManager.FindByEmailAsync(userName);
             if (user == null)
@@ -157,7 +167,7 @@ namespace LMSystem.Services
             return "Add success!";
         }
 
-        public async Task<string> DeleteRole(string userName, string roleName)
+        public async Task<string> DeleteUserRole(string userName, string roleName)
         {
             var user = await _userManager.FindByEmailAsync(userName);
             if (user == null)

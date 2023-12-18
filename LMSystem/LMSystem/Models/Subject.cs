@@ -24,4 +24,10 @@ namespace LMSystem.Models
         [ForeignKey("TeacherId")]
         public ApplicationUser ApplicationUser { get; set; }
     }
+
+    public class SubjectFrame
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
 }

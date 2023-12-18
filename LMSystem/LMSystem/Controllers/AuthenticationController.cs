@@ -68,7 +68,7 @@ namespace LMSystem.Controllers
             if (userName == null || roleName == null)
                 return Content("Please input correctly");
 
-            var result = await _authService.GiveRole(userName, roleName);
+            var result = await _authService.GiveUserRole(userName, roleName);
 
             return Content(result);
         }        

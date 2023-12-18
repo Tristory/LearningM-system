@@ -22,6 +22,13 @@ namespace LMSystem.Models
         public ApplicationUser ApplicationUser { get; set; }
     }
 
+    public class FileFrame
+    {
+        public string Name { get; set; }
+        public string Type { get; set; }
+
+    }
+
     public class FileInfor
     {
         public byte[] Bytes { get; set; }

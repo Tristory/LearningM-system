@@ -1,15 +1,16 @@
 ﻿using LMSystem.Data;
 using LMSystem.Models;
+using LMSystem.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMSystem.Services
 {
-    public class ClassMService
+    public class ClassMService : IClassMService
     {
         private readonly ApplicationDbContext _context;
 
-        public ClassMService(ApplicationDbContext context) 
-        { 
+        public ClassMService(ApplicationDbContext context)
+        {
             _context = context;
         }
 
@@ -19,6 +20,13 @@ namespace LMSystem.Services
             return _context.Classes
                 .Include(e => e.Subject)
                 .Where(e => e.SubjectId == subjectId).ToList();
+        }
+
+        public Class GetClass(int id)
+        {
+            return _context.Classes
+                .Include(e => e.Subject)
+                .FirstOrDefault(e => e.Id == id);
         }
 
         public string CreateClass(Class pclass)
@@ -39,7 +47,7 @@ namespace LMSystem.Services
 
         public string DeleteClass(Class pclass)
         {
-            _context.Classes.Remove(pclass); 
+            _context.Classes.Remove(pclass);
             _context.SaveChanges();
 
             return "Delete success!";
@@ -54,7 +62,7 @@ namespace LMSystem.Services
                 .Include(e => e.Material)
                 .Where(e => e.ClassId == classId).ToList();
         }
-        
+
         public string CreateClassMaterial(ClassMaterial classMaterial)
         {
             _context.ClassMaterials.Add(classMaterial);
@@ -85,6 +93,20 @@ namespace LMSystem.Services
             return _context.Lectures
                 .Include(e => e.Class)
                 .Where(e => e.ClassId == classId).ToList();
+        }
+
+        public List<Lecture> GetSubjectLectures(int subjectId)
+        {
+            return _context.Lectures
+                .Include(e => e.Class)
+                .Where(e => e.Class.SubjectId == subjectId).ToList();
+        }
+
+        public Lecture GetDetailLecture(int id)
+        {
+            return _context.Lectures
+                .Include(e => e.Class)
+                .FirstOrDefault(e => e.Id == id);
         }
 
         public string CreateLecture(Lecture lecture)

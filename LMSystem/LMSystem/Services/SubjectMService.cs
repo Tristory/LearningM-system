@@ -1,11 +1,12 @@
 ﻿using LMSystem.Data;
 using LMSystem.Models;
+using LMSystem.Repository;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Policy;
 
 namespace LMSystem.Services
 {
-    public class SubjectMService
+    public class SubjectMService : ISubjectMService
     {
         private readonly ApplicationDbContext _context;
 
@@ -60,14 +61,14 @@ namespace LMSystem.Services
         }
 
         public string CreateSubject(Subject subject)
-        { 
+        {
             _context.Subjects.Add(subject);
             _context.SaveChanges();
 
             return "Create success!";
         }
 
-        public string UpdateSubject(Subject subject) 
+        public string UpdateSubject(Subject subject)
         {
             _context.Subjects.Update(subject);
             _context.SaveChanges();
@@ -75,7 +76,7 @@ namespace LMSystem.Services
             return "Update success!";
         }
 
-        public string DeleteSubject(Subject subject) 
+        public string DeleteSubject(Subject subject)
         {
             _context.Subjects.Remove(subject);
             _context.SaveChanges();
@@ -126,6 +127,14 @@ namespace LMSystem.Services
                 .OrderByDescending(e => e.AccessD).ToList();
         }
 
+        public StudentSubject GetdetailSS(string studentId, int subjectId)
+        {
+            return _context.StudentSubjects
+                .Include(e => e.ApplicationUser)
+                .Include(e => e.Subject)
+                .FirstOrDefault(e => e.SubjectId == subjectId && e.StudentId == studentId);
+        }
+
         public string CreateStudentSubject(StudentSubject studentSub)
         {
             _context.StudentSubjects.Add(studentSub);
@@ -171,23 +180,25 @@ namespace LMSystem.Services
                 .Include(e => e.Subject)
                 .Where(e => e.Name.Contains(searchS) || e.Description.Contains(searchS)).ToList();
         }
-        
-        public string CreateTopic(Topic topic) 
+
+        public Topic GetTopic(int id) => _context.Topics.Find(id);
+
+        public string CreateTopic(Topic topic)
         {
             _context.Topics.Add(topic);
             _context.SaveChanges();
 
             return "Create success!";
         }
-        public string UpdateTopic(Topic topic) 
-        { 
+        public string UpdateTopic(Topic topic)
+        {
             _context.Topics.Update(topic);
             _context.SaveChanges();
 
             return "Update success!";
         }
-        public string DeleteTopic(Topic topic) 
-        { 
+        public string DeleteTopic(Topic topic)
+        {
             _context.Topics.Remove(topic);
             _context.SaveChanges();
 
@@ -234,8 +245,8 @@ namespace LMSystem.Services
         }
 
         // For Answer Handling
-        public List<Answer> GetQuestionAnswers(int questionId) 
-        { 
+        public List<Answer> GetQuestionAnswers(int questionId)
+        {
             return _context.Answers
                 .Include(e => e.Question)
                 .Include(e => e.ApplicationUser)

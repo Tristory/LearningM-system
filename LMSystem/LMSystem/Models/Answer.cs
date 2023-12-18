@@ -18,4 +18,10 @@ namespace LMSystem.Models
         [ForeignKey("OwnerId")]
         public ApplicationUser ApplicationUser { get; set; }
     }
+
+    public class AnswerFrame
+    {
+        public string Content { get; set; }
+        public int QuestionId { get; set; }
+    }
 }

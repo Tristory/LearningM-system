@@ -1,24 +1,26 @@
 ﻿using LMSystem.Data;
 using LMSystem.Models;
+using LMSystem.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace LMSystem.Services
 {
-    public class MessageMService
+    public class MessageMService : IMessageMService
     {
         private readonly ApplicationDbContext _context;
 
         public MessageMService(ApplicationDbContext context)
         {
             _context = context;
-        }        
+        }
 
         // For Notification Handling
         public List<Notification> GetAllUserNotify(string userId)
-        { 
+        {
             return _context.Notifications
                 .Include(e => e.ApplicationUser)
-                .Where(e => e.ReceiverId == userId).ToList();
+                .Where(e => e.ReceiverId == userId)
+                .OrderByDescending(e => e.ReceivedD).ToList();
         }
 
         public List<Notification> GetSearchNotify(string searchS)
@@ -54,6 +56,8 @@ namespace LMSystem.Services
                 .Include(e => e.ApplicationUser)
                 .Where(e => e.IsStored == true && e.ReceiverId == userId).ToList();
         }
+
+        public Notification GetNotification(int id) => _context.Notifications.Find(id);
 
         public string CreateNotification(Notification notify)
         {
@@ -136,8 +140,6 @@ namespace LMSystem.Services
         // For Request Handling
         public List<Request> GetRequests() => _context.Requests.ToList();
 
-        //public List<Request> 
-        
         public string CreateRequest(Request request)
         {
             _context.Requests.Add(request);

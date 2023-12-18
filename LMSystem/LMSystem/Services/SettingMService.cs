@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LMSystem.Services
 {
-    public class SettingMService
+    public class SettingMService : ISettingMService
     {
         private readonly ApplicationDbContext _context;
         private readonly IFileHandlerService _fileHandlerService;
@@ -16,12 +16,14 @@ namespace LMSystem.Services
             _fileHandlerService = fileHandlerService;
         }
 
-        public Setting GetSetting(string userId)
+        public Setting GetUserSetting(string userId)
         {
             return _context.Settings
                 .Include(e => e.ApplicationUser)
                 .FirstOrDefault(e => e.UserId == userId);
         }
+
+        public Setting GetSetting(int id) => _context.Settings.Find(id);
 
         public string CreateSetting(Setting setting)
         {

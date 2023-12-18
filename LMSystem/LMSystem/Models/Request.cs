@@ -15,4 +15,10 @@ namespace LMSystem.Models
         [ForeignKey("SenderId")]
         public ApplicationUser ApplicationUser { get; set; }
     }
+
+    public class RequestFrame
+    {
+        public string Header { get; set; }
+        public string Content { get; set; }
+    }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LMSystem.Services
 {
-    public class FileMService
+    public class FileMService : IFileMService
     {
         private readonly ApplicationDbContext _context;
         private readonly IFileHandlerService _fileHandlerService;
@@ -17,6 +17,12 @@ namespace LMSystem.Services
         }
 
         // For File Handling
+        public List<Models.File> GetFiles()
+        {
+            return _context.Files
+                .Include(e => e.ApplicationUser).ToList();
+        }
+
         public List<Models.File> GetUserFiles(string userId)
         {
             return _context.Files
@@ -29,6 +35,13 @@ namespace LMSystem.Services
             return _context.Files
                 .Include(e => e.ApplicationUser)
                 .Where(e => e.Type == type).ToList();
+        }
+
+        public List<Models.File> GetSearchFiles(string searchS)
+        {
+            return  _context.Files
+                .Include(e => e.ApplicationUser)
+                .Where(e => e.Name.Contains(searchS)).ToList();
         }
 
         public Models.File GetFile(int id) => _context.Files.Find(id);
@@ -44,14 +57,22 @@ namespace LMSystem.Services
 
             return "Create success!";
         }
-        public string UpdateFile(Models.File file) 
+
+        public async Task<string> ReuploadFile(IFormFile uploadFile, Models.File file, string folderType)
+        {
+            await _fileHandlerService.UploadFile(uploadFile, file.Name, folderType);
+
+            return "Reupload success!";
+        }
+
+        public string UpdateFile(Models.File file)
         {
             _context.Files.Update(file);
             _context.SaveChanges();
 
             return "Update success!";
         }
-        public string DeleteFile(Models.File file) 
+        public string DeleteFile(Models.File file)
         {
             _fileHandlerService.DeleteFile(file.Name, file.Type);
 
@@ -93,6 +114,14 @@ namespace LMSystem.Services
                 .Where(e => e.SubjectId == subjectId).ToList();
         }
 
+        public List<Material> GetApprovedSubjectMaterials(int subjectId)
+        {
+            return _context.Materials
+                .Include(e => e.Subject)
+                .Include(e => e.File)
+                .Where(e => e.SubjectId == subjectId && e.IsApproved).ToList();
+        }
+
         public List<Material> GetSearchMaterials(string searchS)
         {
             return _context.Materials
@@ -101,12 +130,12 @@ namespace LMSystem.Services
                 .Where(e => e.File.Name.Contains(searchS)).ToList();
         }
 
-        public List<Material> GetSubjectStatusMaterials(string status)
+        public List<Material> GetStatusMaterials(string status)
         {
             return _context.Materials
                 .Include(e => e.Subject)
                 .Include(e => e.File)
-                .Where(e => e.Subject.Status == status).ToList();
+                .Where(e => e.status == status).ToList();
         }
 
         public List<Material> GetTeacherSubjectMaterials(string teacherId)
@@ -152,7 +181,7 @@ namespace LMSystem.Services
                 .Include(e => e.File)
                 .FirstOrDefault(e => e.Id == id);
         }
-        
+
         public Material GetFileMaterial(int fileId)
         {
             return _context.Materials
@@ -160,9 +189,9 @@ namespace LMSystem.Services
                 .FirstOrDefault(e => e.FileId == fileId);
         }
 
-        public string CreateMaterial(Material material, IFormFile uploadFile, Models.File file)
+        public async Task<string> CreateMaterial(Material material, IFormFile uploadFile, Models.File file)
         {
-            var result = CreateFile(uploadFile, file, "Materials");
+            var result = await CreateFile(uploadFile, file, "Materials");
 
             material.FileId = file.Id;
 
@@ -171,36 +200,58 @@ namespace LMSystem.Services
 
             return "Create success!";
         }
-        public string UpdateMaterial(Material material) 
+        public string UpdateMaterial(Material material)
         {
             _context.Materials.Update(material);
             _context.SaveChanges();
 
             return "Update success!";
         }
-        public string DeleteMaterial(Material material) 
-        {
-            _context.Materials.Remove(material);
-            _context.SaveChanges();
 
-            return "Delete success!";
+        public async Task<string> UpdateMaterialFile(IFormFile uploadFile, Material material)
+        {
+            var file = GetFile(material.FileId);
+
+            return await ReuploadFile(uploadFile, file, "Materials");
+
         }
 
-        public string AppproveMaterial(int materialId)
+        public string DeleteMaterial(Material material)
+        {
+            var file = GetFile(material.FileId);
+
+            _context.Materials.Remove(material);
+            //_context.SaveChanges();
+
+            return DeleteFile(file);
+        }
+
+        public string ApproveMaterial(int materialId)
         {
             var material = GetMaterial(materialId);
 
             material.status = "Checked";
-            material.IsApproved = !material.IsApproved;                      
+            material.IsApproved = !material.IsApproved;
 
             return UpdateMaterial(material);
         }
-        
-        public string DestroyMaterial(Material material)
+
+        public string DestroyMaterial(int materialId)
         {
+            var material = GetMaterial(materialId);
+
             material.IsDeleted = !material.IsDeleted;
 
+            UpdateMaterial(material);
+
             return "Destroy material!";
+        }
+
+        public async Task<FileInfor> DownloadMaterial(int id)
+        {
+            var material = GetMaterial(id);
+
+            return await DownloadFile(material.FileId, "Materials");
         }
 
         // For Exam Handling
@@ -220,12 +271,12 @@ namespace LMSystem.Services
                 .Where(e => e.File.Name.Contains(searchS)).ToList();
         }
 
-        public List<Exam> GetSubjectStatusExams(string status)
+        public List<Exam> GetStatusExams(string status)
         {
             return _context.Exams
                 .Include(e => e.Subject)
                 .Include(e => e.File)
-                .Where(e => e.Subject.Status == status).ToList();
+                .Where(e => e.status == status).ToList();
         }
 
         public List<Exam> GetTeacherSubjectExams(string teacherId)
@@ -233,15 +284,15 @@ namespace LMSystem.Services
             return _context.Exams
                 .Include(e => e.Subject)
                 .Include(e => e.File)
-                .Where(e => e.Subject.ApplicationUser.Id == teacherId).ToList();
+                .Where(e => e.Subject.TeacherId == teacherId).ToList();
         }
 
-        public List<Exam> GetSearchedExams(string searchS)
+        public List<Exam> GetSubNameExams(string subName)
         {
             return _context.Exams
                 .Include(e => e.Subject)
                 .Include(e => e.File)
-                .Where(e => e.File.Name.Contains(searchS)).ToList();
+                .Where(e => e.Subject.Name.Contains(subName)).ToList();
         }
 
         public List<Exam> GetExams() => _context.Exams.ToList();
@@ -260,12 +311,12 @@ namespace LMSystem.Services
             return _context.Exams
                 .Include(e => e.Subject)
                 .Include(e => e.File)
-                .FirstOrDefault(e => e.Id  == id);
+                .FirstOrDefault(e => e.Id == id);
         }
 
-        public string CreateExam(Exam exam, IFormFile uploadFile, Models.File file) 
+        public async Task<string> CreateExam(Exam exam, IFormFile uploadFile, Models.File file)
         {
-            var result = CreateFile(uploadFile, file, "Exams");
+            var result = await CreateFile(uploadFile, file, "Exams");
 
             exam.FileId = file.Id;
 
@@ -274,22 +325,24 @@ namespace LMSystem.Services
 
             return "Create success!";
         }
-        public string UpdateExam(Exam exam) 
-        { 
+        public string UpdateExam(Exam exam)
+        {
             _context.Exams.Update(exam);
             _context.SaveChanges();
 
             return "Update success!";
         }
-        public string DeleteExam(Exam exam) 
-        { 
-            _context.Exams.Remove(exam);
-            _context.SaveChanges();
+        public string DeleteExam(Exam exam)
+        {
+            var file = GetFile(exam.FileId);
 
-            return "Delete success!";
+            _context.Exams.Remove(exam);
+            //_context.SaveChanges();
+
+            return DeleteFile(file);
         }
 
-        public string AppproveExam(int examId)
+        public string ApproveExam(int examId)
         {
             var exam = GetExam(examId);
 
@@ -299,11 +352,22 @@ namespace LMSystem.Services
             return UpdateExam(exam);
         }
 
-        public string DestroyExam(Exam exam)
+        public string DestroyExam(int examId)
         {
+            var exam = GetExam(examId);
+
             exam.IsDeleted = !exam.IsDeleted;
 
+            UpdateExam(exam);
+
             return "Destroy Exam!";
+        }
+
+        public async Task<FileInfor> DownloadExam(int id)
+        {
+            var exam = GetExam(id);
+
+            return await DownloadFile(exam.FileId, "Exams");
         }
     }
 }

@@ -18,4 +18,9 @@ namespace LMSystem.Models
         [ForeignKey("UserId")]
         public ApplicationUser ApplicationUser { get; set; }
     }
+
+    public class SettingFrame
+    {
+        public string Description { get; set; }
+    }
 }

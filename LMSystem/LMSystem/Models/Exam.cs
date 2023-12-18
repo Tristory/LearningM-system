@@ -13,7 +13,7 @@ namespace LMSystem.Models
         public string status { get; set; }
         public bool IsApproved { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime ValidatedD { get; set; }
+        public DateTime? ValidatedD { get; set; }
 
         // Foreign Key
         public int FileId { get; set; }
@@ -24,5 +24,18 @@ namespace LMSystem.Models
         [ForeignKey("SubjectId")]
         public Subject Subject { get; set; }
 
+    }
+
+    public class ExamFrame
+    {
+        public string Note { get; set; }
+        public string Format { get; set; }
+        public int Duration { get; set; }
+        //public string status { get; set; }
+        //public bool IsApproved { get; set; }
+        //public bool IsDeleted { get; set; }
+        //public DateTime ValidatedD { get; set; }
+        //public int FileId { get; set; }
+        public int SubjectId { get; set; }
     }
 }
