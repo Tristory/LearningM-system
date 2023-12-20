@@ -28,6 +28,8 @@ namespace LMSystem.Models
 
     public class ExamFrame
     {
+        public string Name { get; set; }
+        public string Type { get; set; }
         public string Note { get; set; }
         public string Format { get; set; }
         public int Duration { get; set; }

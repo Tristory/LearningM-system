@@ -207,21 +207,21 @@ namespace LMSystem.Controllers
         
         // 2. Notification Management
         // Get all user notification
-        [HttpGet("Get user notify")]
+        [HttpGet("Get user notify fs")]
         public List<Notification> GetUserNotify(string userId)
         {
             return _messageMService.GetAllUserNotify(userId);
         }
 
         // Search for notification
-        [HttpGet("Search notify")]
+        [HttpGet("Search notify fs")]
         public List<Notification> SearchNotify(string searchS)
         {
             return _messageMService.GetSearchNotify(searchS);
         }
 
         // Delete notification
-        [HttpPatch("Delete notify")]
+        [HttpPatch("Delete notify fs")]
         public string SetNotifyToDeletable(int notifyId)
         {
             var notify = _messageMService.GetNotification(notifyId);
@@ -230,7 +230,7 @@ namespace LMSystem.Controllers
         }
 
         // Set check and uncheck
-        [HttpPatch("Change check")]
+        [HttpPatch("Change check fs")]
         public string ChangeNotifyCheck(int notifyId)
         {
             var notify = _messageMService.GetNotification(notifyId);
@@ -243,7 +243,7 @@ namespace LMSystem.Controllers
         // Access user setting will be demonstrate below
 
         // Update user setting
-        [HttpPatch("Update user setting")]
+        [HttpPatch("Update user setting fs")]
         public string UpdateSetting(int settingId, SettingFrame settingFrame)
         {
             var setting = _settingMService.GetSetting(settingId);
@@ -254,7 +254,7 @@ namespace LMSystem.Controllers
         }
 
         // Change the notification setting
-        [HttpPatch("Change user notify setting")]
+        [HttpPatch("Change user notify setting fs")]
         public string ChangenNotifySetting(int settingId)
         {
             var setting = _settingMService.GetSetting(settingId);
@@ -264,14 +264,14 @@ namespace LMSystem.Controllers
 
         // 3. Send help
         // Show all request
-        [HttpGet("Show requests")]
+        [HttpGet("Show requests fs")]
         public List<Request> GetRequests()
         {
             return _messageMService.GetRequests();
         }
 
         // Make a request
-        [HttpPost("Make request")]
+        [HttpPost("Make request fs")]
         public async Task<string> CreateRequest(RequestFrame requestFrame)
         {
             var userName = User.FindFirst(ClaimTypes.Name)?.Value;
@@ -296,14 +296,14 @@ namespace LMSystem.Controllers
 
         // 4. Account Management
         // Get User setting include account info
-        [HttpGet("Get user setting")]
+        [HttpGet("Get user setting fs")]
         public Setting GetUserSetting(string userId)
         {
             return _settingMService.GetUserSetting(userId);
         }
 
         // Change or Upload portrait picture
-        [HttpPost("Change portrait")]
+        [HttpPost("Change portrait fs")]
         public async Task<string> ChangePortrait(int settingId, IFormFile portrait)
         {
             var setting = _settingMService.GetSetting(settingId);
@@ -312,7 +312,7 @@ namespace LMSystem.Controllers
         }
 
         // Delete portrait picture
-        [HttpDelete("Delete portrait")]
+        [HttpDelete("Delete portrait fs")]
         public string DeletePortrait(int settingId)
         {
             var setting = _settingMService.GetSetting(settingId);
@@ -321,7 +321,7 @@ namespace LMSystem.Controllers
         }
 
         // Change and save password
-        [HttpPatch("Change password")]
+        [HttpPatch("Change password fs")]
         public async Task<string> ChangePassword(string userId, string oldPassword, string newPassword)
         {
             var user = await _authService.GetApplicationUserByIdAsync(userId);

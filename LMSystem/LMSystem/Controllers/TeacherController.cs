@@ -288,7 +288,7 @@ namespace LMSystem.Controllers
 
         // Upload or create Exam
         [HttpPost("Create Exam")]
-        public async Task<IActionResult> UploadExam(IFormFile formFile, FileFrame fileFrame, ExamFrame examFrame)
+        public async Task<IActionResult> UploadExam(IFormFile formFile, ExamFrame examFrame)
         {
             var userName = User.FindFirst(ClaimTypes.Name)?.Value;
 
@@ -302,8 +302,8 @@ namespace LMSystem.Controllers
 
             var file = new Models.File
             {
-                Name = fileFrame.Name,
-                Type = fileFrame.Type,
+                Name = examFrame.Name,
+                Type = examFrame.Type,
                 LastChangedD = DateTime.Now,
                 OwnerId = user.Id
             };
